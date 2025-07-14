@@ -36,9 +36,9 @@ async def on_ready():
 async def load_all_extensions():
     for cog in initial_cogs:
         try:
-            await bot.load_extension(cog)
+            await bot.load_extension(cog)  # ✅ Proper async loading
             print(f"🔹 Loaded {cog}")
-            await asyncio.sleep(1)  # Add delay to prevent rate-limiting
+            await asyncio.sleep(1)  # Optional: Reduce risk of rate limit
         except Exception as e:
             print(f"❌ Failed to load {cog}: {e}")
 
