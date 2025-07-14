@@ -50,3 +50,15 @@ async def main():
         except Exception as e:
             print(f"❌ Failed to load {cog}: {e}")
     
+    # Start keep_alive server (only needed for Replit/UptimeRobot)
+    keep_alive()
+
+    # Start bot
+    try:
+        await bot.start(TOKEN)
+    except Exception as e:
+        print(f"❌ Error starting bot: {e}")
+
+if __name__ == "__main__":
+    asyncio.run(main())
+    
