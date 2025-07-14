@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import os
+import asyncio
 from dotenv import load_dotenv
 from keep_alive import keep_alive
 
@@ -16,7 +17,7 @@ bot = commands.Bot(command_prefix=PREFIX, intents=intents)
 # Remove default help to allow custom help later
 bot.remove_command("help")
 
-# Cogs to load
+# List of cogs
 initial_cogs = [
     "cogs.automod",
     "cogs.moderation",
@@ -40,19 +41,12 @@ async def on_ready():
     print(f"✅ Logged in as {bot.user} (ID: {bot.user.id})")
     print("🌐 Bot is online and ready!")
 
-# Load cogs
-if __name__ == "__main__":
+async def main():
+    # Load extensions
     for cog in initial_cogs:
         try:
-            bot.load_extension(cog)
+            await bot.load_extension(cog)
             print(f"🔹 Loaded {cog}")
         except Exception as e:
             print(f"❌ Failed to load {cog}: {e}")
-
-    # Keep bot alive (for Replit, UptimeRobot)
-    keep_alive()
-
-    try:
-        bot.run(TOKEN)
-    except Exception as e:
-        print(f"❌ Error starting bot: {e}")
+    
