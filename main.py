@@ -1,43 +1,26 @@
-# main.py
-
 import discord
 from discord.ext import commands
+from discord import app_commands
 import os
 from dotenv import load_dotenv
 
-# Load token from .env file
+# Load environment variables from .env
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 PREFIX = "&"
 
+# Intents setup
 intents = discord.Intents.all()
+
+# Create bot with command prefix and intents
 bot = commands.Bot(command_prefix=PREFIX, intents=intents)
 
+# Event: On ready
 @bot.event
 async def on_ready():
-    print(f"✅ Logged in as {bot.user} ({bot.user.id})")
-    await bot.tree.sync()
-    print("✅ Slash commands synced.")
-
-# List of cogs to load
-initial_cogs = [
-    "cogs.automod",
-    "cogs.moderation",
-    "cogs.utility",
-    "cogs.fun",
-    "cogs.music",
-    "cogs.modmail",
-    "cogs.tickets",
-    "cogs.chatgpt",
-]
-
-for cog in initial_cogs:
+    print(f"✅ Logged in as {bot.user} (ID: {bot.user.id})")
     try:
-        bot.load_extension(cog)
-        print(f"✅ Loaded cog: {cog}")
+        synced = await bot.tree.sync()
+        print(f"✅ Synced {len(synced)} slash commands.")
     except Exception as e:
-        print(f"❌ Failed to load cog {cog}: {e}")
-
-# Run bot
-if __name__ == "__main__":
-    bot.run(TOKEN)
+        print(f"❌ Error syn
