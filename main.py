@@ -29,4 +29,5 @@ async def on_ready():
     except Exception as e:
         print(f"❌ Error syncing slash commands: {e}")
 
-    print(f"✅ L
+    print(f"✅ Logged in as {bot.user} (ID: {bot.user.id})")
+
