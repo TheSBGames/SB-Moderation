@@ -4,22 +4,33 @@ from discord import app_commands
 from dotenv import load_dotenv
 import os
 
-# Load environment variables
+# Load .env variables
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 
-# Prefix and intents
+# Safety check
+if not TOKEN:
+    print("❌ DISCORD_TOKEN is missing from environment variables!")
+    exit(1)
+
+# Bot prefix and intents
 PREFIX = "&"
 intents = discord.Intents.all()
 
-# Create hybrid bot
+# Create the bot
 bot = commands.Bot(command_prefix=PREFIX, intents=intents)
 
-# Set up event when bot is ready
-@bot.event
-async def on_ready():
-    # Set bot presence
-    activity = discord.Activity(type=discord.ActivityType.watching, name="SB Moderation | &help or /help")
-    await bot.change_presence(status=discord.Status.online, activity=activity)
-
-    # Sync slash comman
+# List of cogs to load
+initial_cogs = [
+    "cogs.automod",
+    "cogs.moderation",
+    "cogs.utility",
+    "cogs.fun",
+    "cogs.music",
+    "cogs.tickets",
+    "cogs.modmail",
+    "cogs.chatgpt",
+    "cogs.voice",
+    "cogs.securechannels",
+    "cogs.vcban",
+    "cogs.automation",
