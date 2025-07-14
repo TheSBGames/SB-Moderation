@@ -1,7 +1,8 @@
+# main.py
+
 import discord
 from discord.ext import commands
 import os
-import asyncio
 from dotenv import load_dotenv
 from keep_alive import keep_alive
 
@@ -10,14 +11,14 @@ load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 PREFIX = "&"
 
-# Intents
+# Setup intents
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=PREFIX, intents=intents)
 
-# Remove default help to allow custom help later
+# Remove default help command (optional)
 bot.remove_command("help")
 
-# List of cogs
+# List of cogs to load
 initial_cogs = [
     "cogs.automod",
     "cogs.moderation",
@@ -41,24 +42,28 @@ async def on_ready():
     print(f"✅ Logged in as {bot.user} (ID: {bot.user.id})")
     print("🌐 Bot is online and ready!")
 
-async def main():
-    # Load extensions
+    # Sync application (slash/hybrid) commands
+    try:
+        synced = await bot.tree.sync()
+        print(f"✅ Synced {len(synced)} slash commands.")
+    except Exception as e:
+        print(f"❌ Slash command sync failed: {e}")
+
+# Load cogs
+if __name__ == "__main__":
     for cog in initial_cogs:
         try:
-            await bot.load_extension(cog)
+            bot.load_extension(cog)
             print(f"🔹 Loaded {cog}")
         except Exception as e:
             print(f"❌ Failed to load {cog}: {e}")
-    
-    # Start keep_alive server (only needed for Replit/UptimeRobot)
+
+    # Start keep_alive web server (optional for uptime services)
     keep_alive()
 
-    # Start bot
+    # Run the bot
     try:
-        await bot.start(TOKEN)
+        bot.run(TOKEN)
     except Exception as e:
         print(f"❌ Error starting bot: {e}")
-
-if __name__ == "__main__":
-    asyncio.run(main())
-    
+        
