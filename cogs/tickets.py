@@ -1,9 +1,6 @@
-# cogs/tickets.py
-
 import discord
 from discord.ext import commands
 from discord.ui import View, Select
-import asyncio
 
 class TicketSelect(Select):
     def __init__(self):
@@ -26,8 +23,12 @@ class TicketSelect(Select):
             overwrites=overwrites,
             topic=f"{ticket_type} ticket for {interaction.user.name}"
         )
-        await ticket_channel.send(f"🎟️ Hello {interaction.user.mention}, staff will assist you shortly.\nType `&close` to close this ticket.")
-        await interaction.response.send_message(f"✅ Ticket created: {ticket_channel.mention}", ephemeral=True)
+        await ticket_channel.send(
+            f"🎟️ Hello {interaction.user.mention}, staff will assist you shortly.\nType `&close` to close this ticket."
+        )
+        await interaction.response.send_message(
+            f"✅ Ticket created: {ticket_channel.mention}", ephemeral=True
+        )
 
 class TicketView(View):
     def __init__(self):
@@ -54,4 +55,10 @@ class Tickets(commands.Cog):
         """Close the current ticket channel."""
         if "ticket" in ctx.channel.name:
             await ctx.send("❌ Ticket will close in 5 seconds...")
-            await async
+            await discord.utils.sleep_until(discord.utils.utcnow() + discord.utils.timedelta(seconds=5))
+            await ctx.channel.delete()
+        else:
+            await ctx.send("⚠️ This command can only be used in a ticket channel.")
+
+async def setup(bot):
+    await bot.add_cog(Tickets(bot))
