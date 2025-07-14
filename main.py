@@ -1,26 +1,15 @@
 import discord
 from discord.ext import commands
-from discord import app_commands
-from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
 
-# Load .env variables
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
-
-# Safety check
-if not TOKEN:
-    print("❌ DISCORD_TOKEN is missing from environment variables!")
-    exit(1)
-
-# Bot prefix and intents
 PREFIX = "&"
-intents = discord.Intents.all()
 
-# Create the bot
+intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=PREFIX, intents=intents)
 
-# List of cogs to load
 initial_cogs = [
     "cogs.automod",
     "cogs.moderation",
@@ -34,4 +23,24 @@ initial_cogs = [
     "cogs.securechannels",
     "cogs.vcban",
     "cogs.automation",
+    "cogs.mic",
+    "cogs.welcome",
+    "cogs.customroles"
 ]
+
+@bot.event
+async def on_ready():
+    print(f"✅ Logged in as {bot.user} (ID: {bot.user.id})")
+
+if __name__ == "__main__":
+    for cog in initial_cogs:
+        try:
+            bot.load_extension(cog)
+            print(f"🔹 Loaded {cog}")
+        except Exception as e:
+            print(f"❌ Failed to load {cog}: {e}")
+    
+    try:
+        bot.run(TOKEN)
+    except Exception as e:
+        print(f"❌ Error starting bot: {e}")
