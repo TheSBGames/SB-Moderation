@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import asyncio
 import os
 from dotenv import load_dotenv
 
@@ -32,15 +33,22 @@ initial_cogs = [
 async def on_ready():
     print(f"✅ Logged in as {bot.user} (ID: {bot.user.id})")
 
-if __name__ == "__main__":
+async def load_all_extensions():
     for cog in initial_cogs:
         try:
-            bot.load_extension(cog)
+            await bot.load_extension(cog)
             print(f"🔹 Loaded {cog}")
+            await asyncio.sleep(1)  # Add delay to prevent rate-limiting
         except Exception as e:
             print(f"❌ Failed to load {cog}: {e}")
-    
-    try:
-        bot.run(TOKEN)
-    except Exception as e:
-        print(f"❌ Error starting bot: {e}")
+
+async def main():
+    async with bot:
+        await load_all_extensions()
+        try:
+            await bot.start(TOKEN)
+        except Exception as e:
+            print(f"❌ Error starting bot: {e}")
+
+if __name__ == "__main__":
+    asyncio.run(main())
