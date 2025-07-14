@@ -34,3 +34,4 @@ initial_cogs = [
     "cogs.securechannels",
     "cogs.vcban",
     "cogs.automation",
+]
