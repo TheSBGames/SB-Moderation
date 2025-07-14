@@ -29,4 +29,5 @@ async def on_ready():
         synced = await bot.tree.sync()
         print(f"✅ Synced {len(synced)} slash commands.")
     except Exception as e:
-        print(f"❌ Error syn
+    print(f"❌ Error syncing slash commands: {e}")
+
