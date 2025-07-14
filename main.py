@@ -1,16 +1,22 @@
 import discord
 from discord.ext import commands
-import asyncio
 import os
 from dotenv import load_dotenv
+from keep_alive import keep_alive
 
+# Load environment variables
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 PREFIX = "&"
 
+# Intents
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=PREFIX, intents=intents)
 
+# Remove default help to allow custom help later
+bot.remove_command("help")
+
+# Cogs to load
 initial_cogs = [
     "cogs.automod",
     "cogs.moderation",
@@ -32,23 +38,21 @@ initial_cogs = [
 @bot.event
 async def on_ready():
     print(f"✅ Logged in as {bot.user} (ID: {bot.user.id})")
+    print("🌐 Bot is online and ready!")
 
-async def load_all_extensions():
+# Load cogs
+if __name__ == "__main__":
     for cog in initial_cogs:
         try:
-            await bot.load_extension(cog)  # ✅ Proper async loading
+            bot.load_extension(cog)
             print(f"🔹 Loaded {cog}")
-            await asyncio.sleep(1)  # Optional: Reduce risk of rate limit
         except Exception as e:
             print(f"❌ Failed to load {cog}: {e}")
 
-async def main():
-    async with bot:
-        await load_all_extensions()
-        try:
-            await bot.start(TOKEN)
-        except Exception as e:
-            print(f"❌ Error starting bot: {e}")
+    # Keep bot alive (for Replit, UptimeRobot)
+    keep_alive()
 
-if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        bot.run(TOKEN)
+    except Exception as e:
+        print(f"❌ Error starting bot: {e}")
