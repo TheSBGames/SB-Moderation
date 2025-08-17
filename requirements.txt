@@ -13,4 +13,3 @@ python-json-logger==2.0.7
 aiodns==3.0.0  # For faster DNS resolution
 cchardet==2.1.7  # For faster encoding detection
 uvloop==0.17.0; sys_platform != "win32"  # Faster event loop for non-Windows systems
-```
